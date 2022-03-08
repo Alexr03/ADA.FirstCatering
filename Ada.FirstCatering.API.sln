@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ada.FirstCatering.API", "Ada.FirstCatering.API\Ada.FirstCatering.API.csproj", "{56038E41-BA66-437D-84D1-92E66B0FE58D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56038E41-BA66-437D-84D1-92E66B0FE58D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56038E41-BA66-437D-84D1-92E66B0FE58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56038E41-BA66-437D-84D1-92E66B0FE58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56038E41-BA66-437D-84D1-92E66B0FE58D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
