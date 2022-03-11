@@ -1,6 +1,10 @@
+using System.Net.Mime;
 using System.Text.Json.Serialization;
 using Ada.FirstCatering.API;
 using Ada.FirstCatering.API.Filters;
+using Ada.FirstCatering.API.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,12 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 var configuration = builder.Configuration;
-builder.Services.AddControllers(options => { options.Filters.Add<BaseResponseFilter>(); })
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<BaseResponseFilter>();
+        options.Filters.Add(new ProducesAttribute(MediaTypeNames.Application.Json));
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddSingleton<CardSessionService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -48,7 +59,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => { c.InjectStylesheet("/swagger-ui/SwaggerDark.css"); });
+    app.UseSwaggerUI(c =>
+    {
+        c.DocumentTitle = "First Catering API";
+        if (configuration.GetValue("Swagger:DarkMode", false))
+        {
+            c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+        }
+    });
 }
 
 app.UseStaticFiles();

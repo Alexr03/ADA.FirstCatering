@@ -1,4 +1,4 @@
-﻿using Ada.FirstCatering.API.Models;
+﻿using Ada.FirstCatering.API.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ada.FirstCatering.API;
@@ -54,7 +54,7 @@ public class FirstCateringContext : DbContext
         var cardsEmployeeId = 2;
         for (var i = 0; i < 20; i++)
         {
-            var shouldHaveOwner = Random.Shared.Next(1, 2) == 1;
+            var shouldHaveOwner = Random.Shared.Next(1, 3) == 1;
             cards.Add(new Card
             {
                 Id = RandomHelper.GenerateRandomString(16),
