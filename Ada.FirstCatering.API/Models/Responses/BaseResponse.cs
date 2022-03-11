@@ -1,13 +1,12 @@
 ﻿using System.Net;
 using System.Text.Json.Serialization;
 
-namespace Ada.FirstCatering.API.Responses;
+namespace Ada.FirstCatering.API.Models.Responses;
 
 public class BaseResponse
 {
     public ResponseStatus ResponseStatus { get; set; }
     
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string Message { get; set; } = null!;
     
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
