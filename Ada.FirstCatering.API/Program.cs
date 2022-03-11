@@ -72,7 +72,6 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseStaticFiles();
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
