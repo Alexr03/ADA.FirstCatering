@@ -1,4 +1,4 @@
-﻿using Ada.FirstCatering.API.Responses;
+﻿using Ada.FirstCatering.API.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
