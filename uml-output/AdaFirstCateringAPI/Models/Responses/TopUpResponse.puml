@@ -1,0 +1,6 @@
+@startuml
+class TopUpResponse {
+    + OldBalance : decimal <<get>> <<set>>
+    + NewBalance : decimal <<get>> <<set>>
+}
+@enduml

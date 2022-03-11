@@ -1,0 +1,8 @@
+@startuml
+class CreateEmployeeModel {
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + PhoneNumber : string <<get>> <<set>>
+}
+@enduml

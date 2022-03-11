@@ -1,0 +1,13 @@
+@startuml
+class FirstCateringContext {
+    # FirstCateringContext()
+    + FirstCateringContext(options:DbContextOptions)
+    # <<override>> OnModelCreating(modelBuilder:ModelBuilder) : void
+    - {static} CreateDefaultData() : (Card[], Employee[])
+}
+class "DbSet`1"<T> {
+}
+DbContext <|-- FirstCateringContext
+FirstCateringContext --> "Employees<Employee>" "DbSet`1"
+FirstCateringContext --> "Cards<Card>" "DbSet`1"
+@enduml

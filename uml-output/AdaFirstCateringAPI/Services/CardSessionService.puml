@@ -1,0 +1,11 @@
+@startuml
+class CardSessionService {
+    + GetCardSession(cardId:string) : CardSession?
+    + CreateCardSession(cardId:string) : CardSession
+    + DeleteCardSession(cardId:string) : void
+    + UpdateCardSessionExpiration(cardId:string) : void
+}
+class "Dictionary`2"<T1,T2> {
+}
+CardSessionService o-> "CardSessions<string,CardSession>" "Dictionary`2"
+@enduml

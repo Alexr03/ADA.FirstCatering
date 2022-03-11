@@ -1,0 +1,7 @@
+@startuml
+class RandomHelper <<static>> {
+    + {static} GenerateRandomString(length:int, includeUpper:bool, includeLower:bool, includeNumbers:bool) : string
+    + {static} GenerateRandomNumber(min:int, max:int) : int
+    + {static} GenerateRandomPhoneNumber() : string
+}
+@enduml

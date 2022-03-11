@@ -1,0 +1,17 @@
+@startuml
+class FirstCateringController {
+    + FirstCateringController(logger:ILogger<FirstCateringController>, firstCateringContext:FirstCateringContext, cardSessionService:CardSessionService, mapper:IMapper)
+    + GetCards(onlyVacantCards:bool) : BaseResponse<IEnumerable<Card>>
+    + StartSession(cardId:string, pin:int) : BaseResponse<CardSession>
+    + EndSession(cardId:string, pin:int) : BaseResponse
+    + TapCard(cardId:string, pin:int) : object
+    + TopUpCard(cardId:string, pin:int, amount:decimal) : BaseResponse<TopUpResponse>
+}
+class "ILogger`1"<T> {
+}
+ControllerBase <|-- FirstCateringController
+FirstCateringController --> "_logger<FirstCateringController>" "ILogger`1"
+FirstCateringController --> "_firstCateringContext" FirstCateringContext
+FirstCateringController --> "_cardSessionService" CardSessionService
+FirstCateringController --> "_mapper" IMapper
+@enduml

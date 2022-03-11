@@ -1,0 +1,19 @@
+@startuml
+class BaseResponse {
+    + Message : string <<get>> <<set>>
+    + StatusCode : HttpStatusCode? <<get>> <<set>>
+    + BaseResponse(responseStatus:ResponseStatus)
+    + BaseResponse(responseStatus:ResponseStatus, message:string)
+}
+class "BaseResponse`1"<T> {
+    + Data : T <<get>> <<set>>
+    + BaseResponse(data:T)
+    + BaseResponse(responseStatus:ResponseStatus, data:T)
+}
+enum ResponseStatus {
+    Success= 1,
+    Error= 2,
+}
+BaseResponse --> "ResponseStatus" ResponseStatus
+BaseResponse <|-- "BaseResponse`1"
+@enduml

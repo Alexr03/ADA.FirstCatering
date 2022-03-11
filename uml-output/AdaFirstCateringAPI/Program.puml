@@ -1,0 +1,10 @@
+@startuml
+class "Add`1"<T> {
+}
+class "AddSingleton`1"<T> {
+}
+class "AddDbContext`1"<T> {
+}
+class "GetRequiredService`1"<T> {
+}
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+class CardSession {
+    + CardSession(cardId:string)
+    + CardId : string <<get>> <<set>>
+    + UpdateExpiration() : void
+}
+CardSession o-> "SessionId" Guid
+CardSession --> "Expiration" DateTime
+@enduml

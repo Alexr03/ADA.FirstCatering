@@ -1,0 +1,12 @@
+@startuml
+class Employee {
+    + Id : int <<get>> <<set>>
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + FullName : string <<get>>
+    + Email : string <<get>> <<set>>
+    + PhoneNumber : string <<get>> <<set>>
+    + CardId : string <<get>> <<set>>
+}
+Employee o-> "Card" Card
+@enduml

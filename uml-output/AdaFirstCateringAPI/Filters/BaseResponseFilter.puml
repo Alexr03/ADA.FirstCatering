@@ -1,0 +1,7 @@
+@startuml
+class BaseResponseFilter {
+    + <<override>> OnResultExecuting(context:ResultExecutingContext) : void
+    - {static} GetReturnType(returnType:Type) : Type
+}
+ResultFilterAttribute <|-- BaseResponseFilter
+@enduml

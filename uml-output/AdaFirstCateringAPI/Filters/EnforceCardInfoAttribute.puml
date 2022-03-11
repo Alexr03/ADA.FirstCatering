@@ -1,0 +1,18 @@
+@startuml
+class EnforceCardInfoAttribute {
+    + EnforceCardInfoAttribute(infoFlags:EEnforceCardInfoFlags)
+    + <<override>> OnActionExecuting(context:ActionExecutingContext) : void
+}
+enum EEnforceCardInfoFlags {
+    CardDontExist= 1,
+    CardExist= 2,
+    CardHasOwner= 4,
+    CardHasNoOwner= 8,
+    PinCorrect= 16,
+    HasActiveSession= 32,
+    HasNoActiveSession= 64,
+}
+ActionFilterAttribute <|-- EnforceCardInfoAttribute
+EnforceCardInfoAttribute --> "_infoFlags" EEnforceCardInfoFlags
+EnforceCardInfoAttribute +-- EEnforceCardInfoFlags
+@enduml

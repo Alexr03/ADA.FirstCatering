@@ -1,0 +1,15 @@
+@startuml
+class EmployeeController {
+    + EmployeeController(logger:ILogger<EmployeeController>, firstCateringContext:FirstCateringContext, mapper:IMapper)
+    + GetEmployees() : BaseResponse<IEnumerable<Employee>>
+    + GetEmployee(id:int) : BaseResponse<Employee?>
+    + GetEmployeeFromCard(cardId:string) : BaseResponse<Employee?>
+    + CreateEmployee(cardId:string, employeeModel:CreateEmployeeModel) : BaseResponse<Employee?>
+}
+class "ILogger`1"<T> {
+}
+ControllerBase <|-- EmployeeController
+EmployeeController --> "_logger<EmployeeController>" "ILogger`1"
+EmployeeController --> "_firstCateringContext" FirstCateringContext
+EmployeeController --> "_mapper" IMapper
+@enduml

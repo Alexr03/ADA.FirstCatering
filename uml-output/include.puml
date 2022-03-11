@@ -1,0 +1,139 @@
+@startuml
+class FirstCateringContext {
+    # FirstCateringContext()
+    + FirstCateringContext(options:DbContextOptions)
+    # <<override>> OnModelCreating(modelBuilder:ModelBuilder) : void
+    - {static} CreateDefaultData() : (Card[], Employee[])
+}
+class "DbSet`1"<T> {
+}
+DbContext <|-- FirstCateringContext
+FirstCateringContext --> "Employees<Employee>" "DbSet`1"
+FirstCateringContext --> "Cards<Card>" "DbSet`1"
+class "Add`1"<T> {
+}
+class "AddSingleton`1"<T> {
+}
+class "AddDbContext`1"<T> {
+}
+class "GetRequiredService`1"<T> {
+}
+class RandomHelper <<static>> {
+    + {static} GenerateRandomString(length:int, includeUpper:bool, includeLower:bool, includeNumbers:bool) : string
+    + {static} GenerateRandomNumber(min:int, max:int) : int
+    + {static} GenerateRandomPhoneNumber() : string
+}
+class EmployeeController {
+    + EmployeeController(logger:ILogger<EmployeeController>, firstCateringContext:FirstCateringContext, mapper:IMapper)
+    + GetEmployees() : BaseResponse<IEnumerable<Employee>>
+    + GetEmployee(id:int) : BaseResponse<Employee?>
+    + GetEmployeeFromCard(cardId:string) : BaseResponse<Employee?>
+    + CreateEmployee(cardId:string, employeeModel:CreateEmployeeModel) : BaseResponse<Employee?>
+}
+class "ILogger`1"<T> {
+}
+ControllerBase <|-- EmployeeController
+EmployeeController --> "_logger<EmployeeController>" "ILogger`1"
+EmployeeController --> "_firstCateringContext" FirstCateringContext
+EmployeeController --> "_mapper" IMapper
+class FirstCateringController {
+    + FirstCateringController(logger:ILogger<FirstCateringController>, firstCateringContext:FirstCateringContext, cardSessionService:CardSessionService, mapper:IMapper)
+    + GetCards(onlyVacantCards:bool) : BaseResponse<IEnumerable<Card>>
+    + StartSession(cardId:string, pin:int) : BaseResponse<CardSession>
+    + EndSession(cardId:string, pin:int) : BaseResponse
+    + TapCard(cardId:string, pin:int) : object
+    + TopUpCard(cardId:string, pin:int, amount:decimal) : BaseResponse<TopUpResponse>
+}
+class "ILogger`1"<T> {
+}
+ControllerBase <|-- FirstCateringController
+FirstCateringController --> "_logger<FirstCateringController>" "ILogger`1"
+FirstCateringController --> "_firstCateringContext" FirstCateringContext
+FirstCateringController --> "_cardSessionService" CardSessionService
+FirstCateringController --> "_mapper" IMapper
+class BaseResponseFilter {
+    + <<override>> OnResultExecuting(context:ResultExecutingContext) : void
+    - {static} GetReturnType(returnType:Type) : Type
+}
+ResultFilterAttribute <|-- BaseResponseFilter
+class EnforceCardInfoAttribute {
+    + EnforceCardInfoAttribute(infoFlags:EEnforceCardInfoFlags)
+    + <<override>> OnActionExecuting(context:ActionExecutingContext) : void
+}
+enum EEnforceCardInfoFlags {
+    CardDontExist= 1,
+    CardExist= 2,
+    CardHasOwner= 4,
+    CardHasNoOwner= 8,
+    PinCorrect= 16,
+    HasActiveSession= 32,
+    HasNoActiveSession= 64,
+}
+ActionFilterAttribute <|-- EnforceCardInfoAttribute
+EnforceCardInfoAttribute --> "_infoFlags" EEnforceCardInfoFlags
+EnforceCardInfoAttribute +-- EEnforceCardInfoFlags
+class AutoMapperProfile {
+    + AutoMapperProfile()
+}
+Profile <|-- AutoMapperProfile
+class CardSessionService {
+    + GetCardSession(cardId:string) : CardSession?
+    + CreateCardSession(cardId:string) : CardSession
+    + DeleteCardSession(cardId:string) : void
+    + UpdateCardSessionExpiration(cardId:string) : void
+}
+class "Dictionary`2"<T1,T2> {
+}
+CardSessionService o-> "CardSessions<string,CardSession>" "Dictionary`2"
+class Card {
+    + Id : string <<get>> <<set>>
+    + Pin : int <<get>> <<set>>
+    + Balance : decimal <<get>> <<set>>
+    + EmployeeId : int? <<get>> <<set>>
+    + Employee : Employee? <<get>> <<set>>
+}
+class Employee {
+    + Id : int <<get>> <<set>>
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + FullName : string <<get>>
+    + Email : string <<get>> <<set>>
+    + PhoneNumber : string <<get>> <<set>>
+    + CardId : string <<get>> <<set>>
+}
+Employee o-> "Card" Card
+class CreateEmployeeModel {
+    + FirstName : string <<get>> <<set>>
+    + LastName : string <<get>> <<set>>
+    + Email : string <<get>> <<set>>
+    + PhoneNumber : string <<get>> <<set>>
+}
+class BaseResponse {
+    + Message : string <<get>> <<set>>
+    + StatusCode : HttpStatusCode? <<get>> <<set>>
+    + BaseResponse(responseStatus:ResponseStatus)
+    + BaseResponse(responseStatus:ResponseStatus, message:string)
+}
+class "BaseResponse`1"<T> {
+    + Data : T <<get>> <<set>>
+    + BaseResponse(data:T)
+    + BaseResponse(responseStatus:ResponseStatus, data:T)
+}
+enum ResponseStatus {
+    Success= 1,
+    Error= 2,
+}
+BaseResponse --> "ResponseStatus" ResponseStatus
+BaseResponse <|-- "BaseResponse`1"
+class CardSession {
+    + CardSession(cardId:string)
+    + CardId : string <<get>> <<set>>
+    + UpdateExpiration() : void
+}
+CardSession o-> "SessionId" Guid
+CardSession --> "Expiration" DateTime
+class TopUpResponse {
+    + OldBalance : decimal <<get>> <<set>>
+    + NewBalance : decimal <<get>> <<set>>
+}
+@enduml

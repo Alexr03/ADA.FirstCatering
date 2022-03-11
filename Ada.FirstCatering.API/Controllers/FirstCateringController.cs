@@ -1,4 +1,5 @@
 using Ada.FirstCatering.API.Filters;
+using Ada.FirstCatering.API.Models.Entities;
 using Ada.FirstCatering.API.Models.Responses;
 using Ada.FirstCatering.API.Services;
 using AutoMapper;
@@ -25,6 +26,18 @@ public class FirstCateringController : ControllerBase
         _mapper = mapper;
     }
 
+    [HttpGet("ListCards")]
+    public BaseResponse<IEnumerable<Card>> GetCards(bool onlyVacantCards = true)
+    {
+        var dbSet = _firstCateringContext.Cards.AsQueryable();
+        if (onlyVacantCards)
+        {
+            dbSet = dbSet.Where(x => x.EmployeeId == null).AsQueryable();
+        }
+
+        return new BaseResponse<IEnumerable<Card>>(ResponseStatus.Success, dbSet);
+    }
+
     [HttpPost("StartSession")]
     [EnforceCardInfo(EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardExist |
                      EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardHasOwner |
@@ -32,7 +45,8 @@ public class FirstCateringController : ControllerBase
                      EnforceCardInfoAttribute.EEnforceCardInfoFlags.HasNoActiveSession)]
     public BaseResponse<CardSession> StartSession(string cardId, int pin)
     {
-        var card = _firstCateringContext.Cards.Include(x => x.Employee).FirstOrDefault(x => x.Id == cardId)!;
+        var card = _firstCateringContext.Cards.Include(x => x.Employee)
+            .FirstOrDefault(x => x.Id == cardId)!;
         var cardSession = _cardSessionService.CreateCardSession(cardId);
         var response = new BaseResponse<CardSession>(ResponseStatus.Success, cardSession)
         {
@@ -80,7 +94,7 @@ public class FirstCateringController : ControllerBase
         card.Balance = newBalance;
         _firstCateringContext.SaveChanges();
         _cardSessionService.UpdateCardSessionExpiration(cardId);
-        
+
         return new BaseResponse<TopUpResponse>(ResponseStatus.Success, new TopUpResponse()
         {
             OldBalance = oldBalance,

@@ -58,16 +58,18 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.DocumentTitle = "First Catering API";
-        if (configuration.GetValue("Swagger:DarkMode", false))
-        {
-            c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
-        }
-    });
+    app.UseDeveloperExceptionPage();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.DocumentTitle = "First Catering API";
+    if (configuration.GetValue("Swagger:DarkMode", false))
+    {
+        c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+    }
+});
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();

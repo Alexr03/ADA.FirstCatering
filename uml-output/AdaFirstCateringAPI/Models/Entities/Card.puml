@@ -1,0 +1,9 @@
+@startuml
+class Card {
+    + Id : string <<get>> <<set>>
+    + Pin : int <<get>> <<set>>
+    + Balance : decimal <<get>> <<set>>
+    + EmployeeId : int? <<get>> <<set>>
+    + Employee : Employee? <<get>> <<set>>
+}
+@enduml
