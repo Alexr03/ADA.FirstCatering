@@ -69,7 +69,8 @@ public class FirstCateringController : ControllerBase
 
     [HttpPost("Tap")]
     [EnforceCardInfo(EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardExist |
-                     EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardHasOwner)]
+                     EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardHasOwner |
+                     EnforceCardInfoAttribute.EEnforceCardInfoFlags.PinCorrect)]
     public object TapCard(string cardId, int pin)
     {
         var cardSession = _cardSessionService.GetCardSession(cardId);

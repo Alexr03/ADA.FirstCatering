@@ -526,6 +526,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,aspnetcore
 
-Ada.FirstCatering.API/firstcatering.db
+*.db
 *.db-shm
 *.db-wal
