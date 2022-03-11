@@ -1,7 +1,10 @@
 ﻿using System.Net;
 using Ada.FirstCatering.API.Filters;
 using Ada.FirstCatering.API.Models;
-using Ada.FirstCatering.API.Responses;
+using Ada.FirstCatering.API.Models.Entities;
+using Ada.FirstCatering.API.Models.Requests;
+using Ada.FirstCatering.API.Models.Responses;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +16,13 @@ public class EmployeeController : ControllerBase
 {
     private readonly ILogger<EmployeeController> _logger;
     private readonly FirstCateringContext _firstCateringContext;
+    private readonly IMapper _mapper;
 
-    public EmployeeController(ILogger<EmployeeController> logger, FirstCateringContext firstCateringContext)
+    public EmployeeController(ILogger<EmployeeController> logger, FirstCateringContext firstCateringContext, IMapper mapper)
     {
         _logger = logger;
         _firstCateringContext = firstCateringContext;
+        _mapper = mapper;
     }
 
     [HttpGet("List")]
@@ -35,29 +40,28 @@ public class EmployeeController : ControllerBase
             .SingleOrDefault(x => x.Id == id));
     }
 
-    [HttpGet("FromCard/{id}")]
-    [EnsureCardExists]
-    public BaseResponse<Employee?> GetEmployeeFromCard(string id)
+    [HttpGet("FromCard/{cardId}")]
+    [EnforceCardInfo(EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardExist | EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardHasOwner)]
+    public BaseResponse<Employee?> GetEmployeeFromCard(string cardId)
     {
         var employee = _firstCateringContext.Cards.Include(x => x.Employee)
-            .SingleOrDefault(x => x.Id == id)?.Employee;
+            .SingleOrDefault(x => x.Id == cardId)?.Employee;
         return new BaseResponse<Employee?>(employee);
     }
 
-    [HttpGet("{id:int}/Card")]
-    public BaseResponse<Card?> GetEmployeeCard(int id)
-    {
-        var employeeCardLink = _firstCateringContext.Employees.Include(x => x.Card)
-            .SingleOrDefault(x => x.Id == id);
-        return new BaseResponse<Card?>(employeeCardLink?.Card);
-    }
-
-    [HttpPost("Create")]
-    public BaseResponse<Employee?> CreateEmployee([FromBody] Employee employee)
+    [HttpPost("Create/{cardId}")]
+    [EnforceCardInfo(EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardExist | EnforceCardInfoAttribute.EEnforceCardInfoFlags.CardHasNoOwner)]
+    public BaseResponse<Employee?> CreateEmployee(string cardId, [FromBody] CreateEmployeeModel employeeModel)
     {
         if (ModelState.IsValid)
         {
+            var employee = _mapper.Map<Employee>(employeeModel);
+            employee.CardId = cardId;
             _firstCateringContext.Employees.Add(employee);
+            _firstCateringContext.SaveChanges();
+            
+            var card = _firstCateringContext.Cards.Find(cardId)!;
+            card.EmployeeId = employee.Id;
             _firstCateringContext.SaveChanges();
             return new BaseResponse<Employee?>(employee)
             {
